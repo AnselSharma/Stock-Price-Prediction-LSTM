@@ -61,12 +61,6 @@ streamlit run app.py
 
 ---
 
-## 🌐 Live Demo
-
-👉 http://10.173.7.54:8501
-
----
-
 ## 🧠 Model Architecture
 
 The prediction model is based on a Long Short-Term Memory (LSTM) neural network designed for time-series forecasting.
