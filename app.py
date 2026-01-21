@@ -4,43 +4,21 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 import streamlit as st
 import yfinance as yf
-from datetime import datetime
 
 
 start = "2016-01-01"
-end = datetime.today().strftime("%Y-%m-%d")
-
+end = "2026-01-01"
 
 
 st.title('Stock Trend Prediction')
 
 # NSE stock → .NS suffix
-user_input = st.text_input("Enter NSE Stock Symbol (without .NS)", "RELIANCE")
-
+user_input = st.text_input("Enter NSE Stock Symbol (without .NS)", "COALINDIA")
 
 ticker = user_input.upper() + ".NS"
 
-df = yf.download(
-    ticker,
-    period="10y",
-    interval="1d",
-    progress=False,
-    threads=False
-)
-st.write("Rows fetched:", len(df))
+df = yf.download(ticker, start=start, end=end)
 
-
-if df is None or df.empty:
-    st.error("No data found for this stock symbol. Try symbols like RELIANCE, TCS, INFY.")
-    st.stop()
-
-
-# Clean missing values
-df = df.dropna()
-
-if df.empty:
-    st.error("No data found for this stock symbol. Please try another.")
-    st.stop()
 
 
 df.head()
@@ -70,19 +48,13 @@ plt.plot(ma200, 'g')
 plt.plot(df.Close, 'b')
 st.pyplot(fig)
 
-if len(data_training) == 0:
-    st.error("Not enough data to train the model.")
-    st.stop()
-
-
 data_training = pd.DataFrame(df['Close'][0:int(len(df)*0.7)])
 data_testing = pd.DataFrame(df['Close'][int(len(df)*0.7): int(len(df))])
 
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler(feature_range=(0, 1))
 
-data_training_array = scaler.fit_transform(np.array(data_training).reshape(-1, 1))
-
+data_training_array = scaler.fit_transform(data_training)
 
 
 #Load my model
