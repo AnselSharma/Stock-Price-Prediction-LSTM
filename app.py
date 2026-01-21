@@ -20,7 +20,15 @@ user_input = st.text_input("Enter NSE Stock Symbol (without .NS)", "RELIANCE")
 
 ticker = user_input.upper() + ".NS"
 
-df = yf.download(ticker, start=start, end=end)
+df = yf.download(
+    ticker,
+    period="10y",
+    interval="1d",
+    progress=False,
+    threads=False
+)
+st.write("Rows fetched:", len(df))
+
 
 if df is None or df.empty:
     st.error("No data found for this stock symbol. Try symbols like RELIANCE, TCS, INFY.")
