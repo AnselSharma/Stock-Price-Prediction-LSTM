@@ -16,6 +16,31 @@ st.title('Stock Trend Prediction')
 user_input = st.text_input("Enter NSE Stock Symbol (without .NS)", "COALINDIA")
 
 ticker = user_input.upper() + ".NS"
+api_key = "APRYNS75LBTJW1UN"
+
+symbol = user_input.upper()
+
+url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}&outputsize=full"
+
+response = requests.get(url)
+data = response.json()
+
+if "Time Series (Daily)" not in data:
+    st.error("Failed to fetch data. API limit reached or invalid symbol.")
+    st.stop()
+
+df = pd.DataFrame.from_dict(data["Time Series (Daily)"], orient="index")
+df = df.rename(columns={
+    "1. open": "Open",
+    "2. high": "High",
+    "3. low": "Low",
+    "4. close": "Close",
+    "5. volume": "Volume"
+})
+
+df.index = pd.to_datetime(df.index)
+df = df.sort_index()
+df = df.astype(float)
 
 df = yf.download(ticker, start=start, end=end)
 
