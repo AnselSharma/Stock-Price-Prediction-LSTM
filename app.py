@@ -13,11 +13,17 @@ end = "2026-01-01"
 st.title('Stock Trend Prediction')
 
 # NSE stock → .NS suffix
-user_input = st.text_input("Enter NSE Stock Symbol (without .NS)", "COALINDIA")
+user_input = st.text_input("Enter NSE Stock Symbol (without .NS)", "RELIANCE")
+
 
 ticker = user_input.upper() + ".NS"
 
 df = yf.download(ticker, start=start, end=end)
+
+if df is None or df.empty:
+    st.error("No data found for this stock symbol. Try symbols like RELIANCE, TCS, INFY.")
+    st.stop()
+
 
 # Clean missing values
 df = df.dropna()
