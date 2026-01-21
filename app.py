@@ -4,10 +4,12 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 import streamlit as st
 import yfinance as yf
+from datetime import datetime
 
 
 start = "2016-01-01"
-end = "2026-01-01"
+end = datetime.today().strftime("%Y-%m-%d")
+
 
 
 st.title('Stock Trend Prediction')
