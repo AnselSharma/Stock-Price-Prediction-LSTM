@@ -19,6 +19,12 @@ ticker = user_input.upper() + ".NS"
 
 df = yf.download(ticker, start=start, end=end)
 
+# Clean missing values
+df = df.dropna()
+
+if df.empty:
+    st.error("No data found for this stock symbol. Please try another.")
+    st.stop()
 
 
 df.head()
@@ -48,13 +54,19 @@ plt.plot(ma200, 'g')
 plt.plot(df.Close, 'b')
 st.pyplot(fig)
 
+if len(data_training) == 0:
+    st.error("Not enough data to train the model.")
+    st.stop()
+
+
 data_training = pd.DataFrame(df['Close'][0:int(len(df)*0.7)])
 data_testing = pd.DataFrame(df['Close'][int(len(df)*0.7): int(len(df))])
 
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler(feature_range=(0, 1))
 
-data_training_array = scaler.fit_transform(data_training)
+data_training_array = scaler.fit_transform(np.array(data_training).reshape(-1, 1))
+
 
 
 #Load my model
